@@ -106,3 +106,54 @@ sql/
  └── database.sql
 
  Projet ECF Vite & Gourmand
+
+ ## Base de données
+
+L'application utilise une base de données MySQL.
+
+Nom de la base :
+vite_gourmand
+
+Tables principales :
+- utilisateur
+- menu
+- commande
+- contact
+
+Le script SQL complet est disponible dans :
+
+```sql
+sql/database.sql
+```
+
+Ce script permet de créer les tables et d'insérer des données de démonstration.
+
+## Gestion de projet
+
+Trello :
+https://trello.com/b/ay16cFaw/ecf-vite-gourmand
+
+## Dépôt GitHub
+
+Projet Symfony :
+https://github.com/yasminanaoui14-bot/mon-projet-symfony
+
+## Déploiement
+
+Lien de l'application :
+
+
+
+## Comptes de démonstration
+
+### Utilisateur
+Email : yasmina@example.com
+Mot de passe : ******
+
+### Employé
+Email : employe@example.com
+Mot de passe : ******
+
+### Administrateur
+Email : admin@example.com
+Mot de passe : ******
