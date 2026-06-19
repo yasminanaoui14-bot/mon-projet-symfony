@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1 class="mb-4">👨‍💼 Espace Employé</h1>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <h2>Gestion des commandes</h2>
+
+        <form method="get" class="row mb-4">
+            <div class="col-md-6">
+                <label>Filtrer par statut</label>
+                <select name="statut" class="form-select">
+                    <option>Tous</option>
+                    <option>Acceptée</option>
+                    <option>En préparation</option>
+                    <option>En cours de livraison</option>
+                    <option>Livrée</option>
+                    <option>En attente du retour de matériel</option>
+                    <option>Terminée</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label>Rechercher un client</label>
+                <input type="text" name="recherche" class="form-control" placeholder="Nom ou email">
+            </div>
+
+            <div class="col-12 mt-3">
+                <button class="btn btn-success">Filtrer</button>
+                <a href="/employe" class="btn btn-secondary">Réinitialiser</a>
+            </div>
+        </form>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Commande</th>
+                    <th>Client</th>
+                    <th>Menu</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Modifier</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for id, commande in commandes %}
+                    <tr>
+                        <td>{{ commande.numero }}</td>
+                        <td>{{ commande.client }}<br><small>{{ commande.email }}</small></td>
+                        <td>{{ commande.menu }}</td>
+                        <td>{{ commande.date }}</td>
+                        <td>
+                            <span class="badge bg-primary">{{ commande.statut }}</span>
+                        </td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="commande_id" value="{{ id }}">
+
+                                <select name="statut" class="form-select form-select-sm mb-2">
+                                    <option>Acceptée</option>
+                                    <option>En préparation</option>
+                                    <option>En cours de livraison</option>
+                                    <option>Livrée</option>
+                                    <option>En attente du retour de matériel</option>
+                                    <option>Terminée</option>
+                                </select>
+
+                                <button class="btn btn-primary btn-sm">Mettre à jour</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">Aucune commande trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card shadow mb-4 mt-4">
+    <div class="card-body">
+        <h2>Annulation d'une commande</h2>
+
+        <p>
+            Avant d'annuler une commande, l'employé doit contacter le client par appel, SMS ou email.
+        </p>
+
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Commande concernée</label>
+                <select class="form-select">
+                    <option>#001 - Yasmina Nao</option>
+                    <option>#002 - Florian Clau</option>
+                    <option>#003 - Riad Inao</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mode de contact utilisé</label>
+                <select class="form-select">
+                    <option>Appel téléphonique</option>
+                    <option>SMS</option>
+                    <option>Email</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Motif d'annulation</label>
+                <textarea class="form-control" rows="3" placeholder="Motif de l'annulation"></textarea>
+            </div>
+
+            <button class="btn btn-danger">Annuler la commande</button>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <h2>⭐ Gestion des avis</h2>
+
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Client</th>
+                    <th>Note</th>
+                    <th>Commentaire</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for id, avisItem in avis %}
+                    <tr>
+                        <td>{{ avisItem.client }}</td>
+                        <td>{{ avisItem.note }}</td>
+                        <td>{{ avisItem.commentaire }}</td>
+                      <td>
+                        {% if avisItem.statut == 'Validé' %}
+                       <span class="badge bg-success">Validé</span>
+                       {% elseif avisItem.statut == 'Refusé' %}
+                       <span class="badge bg-danger">Refusé</span>
+                      {% else %}
+                      <span class="badge bg-warning text-dark">En attente</span>
+                        {% endif %}
+                        </td>
+                       <td>
+    {% if avisItem.statut == 'En attente' %}
+
+        <form method="post" class="d-flex gap-2">
+            <input type="hidden" name="action" value="avis">
+            <input type="hidden" name="avis_id" value="{{ id }}">
+
+            <select name="decision" class="form-select">
+                <option value="Validé">Valider</option>
+                <option value="Refusé">Refuser</option>
+            </select>
+
+            <button class="btn btn-primary">OK</button>
+        </form>
+
+    {% else %}
+
+        <span class="text-success fw-bold">Traité</span>
+
+    {% endif %}
+</td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+           </table>
+    </div>
+</div>
+
+{% endblock %}

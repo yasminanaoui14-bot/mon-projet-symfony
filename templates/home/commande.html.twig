@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow">
+                <div class="card-body">
+
+                    <h1 class="text-center mb-4">
+                        🍽️ Commander un menu
+                    </h1>
+
+                    <form>
+
+                        <div class="mb-3">
+                            <label>Nom</label>
+                            <input type="text" class="form-control w-75" placeholder="Votre nom">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" class="form-control w-75" placeholder="Votre email">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Adresse</label>
+                            <input type="text" class="form-control w-75" placeholder="Votre adresse">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Date de prestation</label>
+                                <input type="date" class="form-control w-75">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label>Heure</label>
+                                <input type="time" class="form-control w-75">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Téléphone</label>
+                                <input type="text" class="form-control w-75" placeholder="06 12 34 56 78">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label>Nombre de personnes</label>
+                                <input type="number" class="form-control w-75" placeholder="Ex : 10">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Menu choisi</label>
+                            <select class="form-select w-75">
+                                <option>Menu Classique</option>
+                                <option>Menu Festif</option>
+                                <option>Menu Végétarien</option>
+                            </select>
+                        </div>
+
+                        <div class="alert alert-info">
+                            Réduction de 10% appliquée à partir de 5 personnes.
+                        </div>
+
+                        <button class="btn btn-success btn-lg mt-3">
+                            ✅ Valider la commande
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

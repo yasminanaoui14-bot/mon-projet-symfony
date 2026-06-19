@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>📞 Contact</h1>
+
+<img src="/images/contact.jpeg"
+     class="img-fluid rounded mb-4"
+     style="height:260px; object-fit:cover; width:100%;"
+     alt="Contact">
+
+<h2>Nous contacter</h2>
+
+<p><strong>Adresse :</strong> 18 rue de la Gastronomie, 33000 Bordeaux</p>
+<p><strong>Téléphone :</strong> 05 58 12 34 00</p>
+<p><strong>Email :</strong> contact33@vite-gourmand.fr</p>
+
+<hr>
+
+<form>
+    <div class="mb-3">
+        <label class="form-label">Nom</label>
+        <input type="text" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Message</label>
+        <textarea class="form-control" rows="5"></textarea>
+    </div>
+
+    <button class="btn btn-primary">
+        Envoyer
+    </button>
+</form>
+
+{% endblock %}

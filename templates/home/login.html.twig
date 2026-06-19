@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1 class="mb-4">🔐 Connexion</h1>
+
+<img src="/images/login.jpeg"
+     class="img-fluid rounded mb-4"
+     style="height:250px; object-fit:cover; width:100%;"
+     alt="Connexion">
+
+<div class="card shadow p-4 mb-4">
+    <form>
+        <div class="mb-3">
+            <label>Email</label>
+            <input type="email" class="form-control" placeholder="Votre email">
+        </div>
+
+        <div class="mb-3">
+            <label>Mot de passe</label>
+            <input type="password" class="form-control" placeholder="Votre mot de passe">
+        </div>
+
+        <button class="btn btn-success">Se connecter</button>
+    </form>
+
+    <hr class="my-4">
+
+<h3>Comptes de test</h3>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card border-secondary">
+            <div class="card-body">
+                <h4>👤 Compte Employé</h4>
+              <p><strong>Identifiant :</strong> employe</p>
+            <p><strong>Mot de passe :</strong> **********</p>
+
+                <a href="/employe" class="btn btn-secondary">
+                👤  Accéder à l'espace employé
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card border-warning">
+            <div class="card-body">
+                <h4>📊 Compte Administrateur</h4>
+                <p><strong>Identifiant :</strong> admin</p>
+                <p><strong>Mot de passe :</strong> ********</p>
+
+                <a href="/rapport" class="btn btn-warning">
+                 📊 Accéder au rapport
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

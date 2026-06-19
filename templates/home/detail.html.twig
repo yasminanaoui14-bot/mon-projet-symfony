@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>Détail du menu</h1>
+
+<div class="card">
+    <div class="card-body">
+
+        <h2>Menu Classique</h2>
+
+        <img src="https://picsum.photos/800/300"
+             class="img-fluid rounded mb-3">
+
+        <p>Description : Menu traditionnel français</p>
+<p><strong>Thème :</strong> Classique</p>
+
+        <ul>
+            <li>Entrée : Salade composée</li>
+            <li>Plat : Poulet rôti et légumes</li>
+            <li>Dessert : Tarte aux pommes</li>
+        </ul>
+
+        <p><strong>Prix :</strong> 80 €</p>
+
+        <a href="/menus" class="btn btn-secondary">
+            Retour aux menus
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

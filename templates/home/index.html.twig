@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<section class="hero">
+    <div class="hero-card">
+        <h1>Bienvenue chez <br><span>Vite & Gourmand</span></h1>
+        <p>
+            Des menus gourmands préparés avec soin pour vos événements professionnels et familiaux.
+        </p>
+        <a href="/menus" class="btn btn-success btn-lg">🍴 Découvrir nos menus</a>
+    </div>
+</section>
+
+<section class="section-info">
+
+    <div class="info-grid">
+        <div class="info-box">
+            <h2>🏢 Présentation de l'entreprise</h2>
+            <p>
+                Vite & Gourmand est une entreprise spécialisée dans la préparation et la livraison
+                de menus pour tous vos événements.
+            </p>
+        </div>
+
+        <div class="info-box">
+            <h2>👥 Notre équipe</h2>
+            <p>
+                Notre équipe est composée de professionnels passionnés par la cuisine,
+                le service client et l'organisation d'événements.
+            </p>
+        </div>
+    </div>
+
+    <div class="avis-box">
+        <h2> Avis clients validés</h2>
+
+        <div class="avis-grid">
+            <div class="avis-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p>Excellent service !</p>
+                <small>– Client satisfait</small>
+            </div>
+
+            <div class="avis-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p>Menus délicieux !</p>
+                <small>– Client satisfait</small>
+            </div>
+
+            <div class="avis-card">
+                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <p>Livraison rapide !</p>
+                <small>– Client satisfait</small>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

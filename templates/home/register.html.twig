@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1 class="mb-4">👥 Inscription</h1>
+
+<img src="/images/register.jpeg"
+     class="img-fluid rounded mb-4"
+     style="height:260px; object-fit:cover; width:100%;"
+     alt="Inscription">
+
+<div class="card shadow p-4 mb-4">
+    <form>
+        <div class="mb-3">
+            <label>Nom</label>
+            <input type="text" class="form-control" placeholder="Votre nom">
+        </div>
+
+        <div class="mb-3">
+            <label>Prénom</label>
+            <input type="text" class="form-control" placeholder="Votre prénom">
+        </div>
+
+        <div class="mb-3">
+            <label>Adresse</label>
+            <input type="text" class="form-control" placeholder="Votre adresse">
+        </div>
+
+        <div class="mb-3">
+            <label>E-mail</label>
+            <input type="email" class="form-control" placeholder="Votre email">
+        </div>
+
+        <div class="mb-3">
+            <label>Mot de passe</label>
+            <input type="password" class="form-control" placeholder="Votre mot de passe">
+        </div>
+
+        <button class="btn btn-danger">S'inscrire</button>
+    </form>
+</div>
+
+{% endblock %}

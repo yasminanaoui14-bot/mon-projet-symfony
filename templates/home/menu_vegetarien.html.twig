@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>Menu Végétarien</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h2>Menu Végétarien</h2>
+
+       <img src="/images/menu-vegetarien.jpg"
+             class="img-fluid rounded mb-3"
+             style="height:220px; object-fit:cover; width:100%;"
+             alt="Menu Vegetarien">
+
+        <p><strong>Description :</strong> Menu équilibré sans viande, idéal pour les repas végétariens.</p>
+
+        <p>🎉 Thème : Santé</p>
+        <p>🥗 Régime : Végétarien</p>
+
+        <ul>
+            <li>Entrée : Salade méditerranéenne</li>
+            <li>Plat : Lasagnes aux légumes</li>
+            <li>Dessert : Tarte aux fruits</li>
+        </ul>
+
+        <p><strong>Minimum :</strong> 6 personnes</p>
+        <h4 class="text-success">Prix : 95 €</h4>
+
+        <a href="/commande" class="btn btn-success">Commander</a>
+        <a href="/menus" class="btn btn-secondary">Retour aux menus</a>
+    </div>
+</div>
+
+{% endblock %}
