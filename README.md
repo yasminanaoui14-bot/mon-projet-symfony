@@ -104,3 +104,5 @@ templates/
 public/
 sql/
  └── database.sql
+
+ Projet ECF Vite & Gourmand
