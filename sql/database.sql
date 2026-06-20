@@ -44,9 +44,10 @@ CREATE TABLE contact (
     date_envoi DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO menu (titre, description, theme, nombre_personnes_min, prix) VALUES
-('Menu Classique', 'Menu traditionnel français', 'Classique', 4, 80.00),
-('Menu Festif', 'Idéal pour les fêtes et événements', 'Festif', 10, 150.00);
+INSERT INTO menu (titre, description, theme, nombre_personnes_min, prix, image) VALUES
+('Menu Classique', 'Menu traditionnel français', 'Classique', 4, 80.00, 'menu-classique.jpg'),
+('Menu Festif', 'Idéal pour les fêtes et événements', 'Festif', 10, 150.00, 'menu-festif.jpg'),
+('Menu Végétarien', 'Menu végétarien équilibré et gourmand', 'Végétarien', 2, 60.00, 'menu-vegetarien.jpg');
 
 INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, role) VALUES
 ('Naoui', 'Yasmina', 'yasmina@example.com', 'motdepasse', 'ROLE_USER'),

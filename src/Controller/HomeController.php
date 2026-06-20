@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use PDO;
 
 class HomeController extends AbstractController
 {
@@ -16,10 +17,20 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig');
     }
 
-#[Route('/menus', name: 'app_menus')]
-public function menus(): Response
-{
-    return $this->render('home/menus.html.twig');
+    #[Route('/menus', name: 'app_menus')]
+    public function menus(): Response
+    {
+    $pdo = new PDO(
+        'mysql:host=127.0.0.1;dbname=vite_gourmand;charset=utf8mb4',
+        'root',
+        ''
+    );
+
+    $menus = $pdo->query('SELECT * FROM menu')->fetchAll(PDO::FETCH_ASSOC);
+
+    return $this->render('home/menus.html.twig', [
+        'menus' => $menus
+    ]);
 }
 
 #[Route('/contact', name: 'app_contact')]
