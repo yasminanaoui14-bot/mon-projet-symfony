@@ -81,9 +81,14 @@
         <p>👥 Minimum : {{ menu.nombre_personnes_min }} personnes</p>
         <p>💰 Prix : {{ menu.prix }} €</p>
 
-        <a href="/menu" class="btn btn-primary">
-            Voir le détail
-        </a>
+        {% if menu.titre == 'Menu Classique' %}
+    <a href="/menu-classique" class="btn btn-primary">Voir le détail</a>
+{% elseif menu.titre == 'Menu Festif' %}
+    <a href="/menu-festif" class="btn btn-primary">Voir le détail</a>
+{% else %}
+    <a href="/menu-vegetarien" class="btn btn-primary">Voir le détail</a>
+{% endif %}
+        
 
     </div>
 </div>
