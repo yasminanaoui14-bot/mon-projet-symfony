@@ -225,8 +225,32 @@ form {
             <a href="/" class="btn btn-primary">🏠 Accueil</a>
             <a href="/menus" class="btn btn-success">📖 Menus</a>
             <a href="/contact" class="btn btn-info">✉️ Contact</a>
-            <a href="/login" class="btn btn-warning">🔐 Connexion</a>
-            <a href="/register" class="btn btn-danger">👥 Inscription</a>
+            {% if app.session.get('user_id') %}
+
+
+        <a href="/mon-compte" class="btn btn-secondary">👤 Mon compte</a>
+
+    {% if app.session.get('role') == 'ROLE_ADMIN' %}
+        <a href="/admin" class="btn btn-dark">⚙️ Admin</a>
+        <a href="/rapport" class="btn btn-secondary">📊 Rapport</a>
+    {% endif %}
+
+    {% if app.session.get('role') == 'ROLE_EMPLOYE' or app.session.get('role') == 'employe' %}
+        <a href="/employe" class="btn btn-dark">👨‍🍳 Employé</a>
+    {% endif %}
+
+
+
+    <a href="/logout" class="btn btn-outline-danger">Déconnexion</a>
+
+{% else %}
+
+    <a href="/login" class="btn btn-warning">🔐 Connexion</a>
+    <a href="/register" class="btn btn-danger">👥 Inscription</a>
+
+{% endif %}
+
+
         </nav>
     </header>
 

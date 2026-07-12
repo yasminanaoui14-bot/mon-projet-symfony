@@ -10,34 +10,60 @@
      alt="Inscription">
 
 <div class="card shadow p-4 mb-4">
-    <form>
+    
+       {% if success %}
+    <div class="alert alert-success">
+        ✅ Votre compte a été créé avec succès !
+    </div>
+{% endif %}
+
+{% if error is defined and error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+{% endif %}
+
+        <form method="post" action="/register">
+
         <div class="mb-3">
             <label>Nom</label>
-            <input type="text" class="form-control" placeholder="Votre nom">
+            <input type="text" name="nom" class="form-control" placeholder="Votre nom" required >
         </div>
 
         <div class="mb-3">
             <label>Prénom</label>
-            <input type="text" class="form-control" placeholder="Votre prénom">
+            <input type="text" name="prenom" class="form-control" placeholder="Votre prénom" required >
         </div>
 
         <div class="mb-3">
-            <label>Adresse</label>
-            <input type="text" class="form-control" placeholder="Votre adresse">
+            <label>Téléphone</label>
+            <input type="tel" name="telephone" class="form-control" placeholder="06 12 34 56 78" required >
+        </div>
+
+        <div class="mb-3">
+            <label>Adresse postale</label>
+            <input type="text" name="adresse" class="form-control" placeholder="Votre adresse postale" required >
         </div>
 
         <div class="mb-3">
             <label>E-mail</label>
-            <input type="email" class="form-control" placeholder="Votre email">
+            <input type="email" name="email" class="form-control" placeholder="Votre email" required >
         </div>
 
         <div class="mb-3">
             <label>Mot de passe</label>
-            <input type="password" class="form-control" placeholder="Votre mot de passe">
+            <input type="password" name="mot_de_passe" class="form-control" placeholder="Votre mot de passe"
+            minlength="10"
+            pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}"
+            title="10 caractères minimum avec une majuscule, une minuscule, un chiffre et un caractère spécial"
+            required >
+    <small class="text-muted">
+    10 caractères minimum, avec une majuscule, une minuscule, un chiffre et un caractère spécial.
+</small>
         </div>
 
         <button class="btn btn-danger">S'inscrire</button>
     </form>
-</div>
+    </div>
 
 {% endblock %}

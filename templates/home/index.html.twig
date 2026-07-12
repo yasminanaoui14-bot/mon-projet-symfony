@@ -36,23 +36,23 @@
         <h2> Avis clients validés</h2>
 
         <div class="avis-grid">
-            <div class="avis-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p>Excellent service !</p>
-                <small>– Client satisfait</small>
-            </div>
 
-            <div class="avis-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p>Menus délicieux !</p>
-                <small>– Client satisfait</small>
-            </div>
+{% for avisItem in avis %}
+    <div class="avis-card">
+        <div class="stars">
+            {% for i in 1..avisItem.note %}
+                ⭐
+            {% endfor %}
+        </div>
 
-            <div class="avis-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p>Livraison rapide !</p>
-                <small>– Client satisfait</small>
-            </div>
+        <p>{{ avisItem.commentaire }}</p>
+        <small>- {{ avisItem.client }}</small>
+    </div>
+{% else %}
+    <p>Aucun avis validé pour le moment.</p>
+{% endfor %}
+
+</div>
         </div>
     </div>
 

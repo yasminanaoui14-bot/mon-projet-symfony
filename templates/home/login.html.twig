@@ -10,50 +10,98 @@
      alt="Connexion">
 
 <div class="card shadow p-4 mb-4">
-    <form>
-        <div class="mb-3">
-            <label>Email</label>
-            <input type="email" class="form-control" placeholder="Votre email">
+
+    {% if erreur %}
+        <div class="alert alert-danger">
+           {{ erreur }}
         </div>
+    {% endif %}
 
-        <div class="mb-3">
-            <label>Mot de passe</label>
-            <input type="password" class="form-control" placeholder="Votre mot de passe">
-        </div>
+    <form method="POST">
 
-        <button class="btn btn-success">Se connecter</button>
-    </form>
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" placeholder="Votre email" required>
+    </div>
 
-    <hr class="my-4">
+    <div class="mb-3">
+        <label>Mot de passe</label>
+        <input type="password" name="mot_de_passe"class="form-control" placeholder="Votre mot de passe" required>
+    </div>
 
-<h3>Comptes de test</h3>
+    <button type="submit" class="btn btn-success">
+        Se connecter
+    </button>
 
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <div class="card border-secondary">
-            <div class="card-body">
-                <h4>👤 Compte Employé</h4>
-              <p><strong>Identifiant :</strong> employe</p>
-            <p><strong>Mot de passe :</strong> **********</p>
+</form>
 
-                <a href="/employe" class="btn btn-secondary">
-                👤  Accéder à l'espace employé
-                </a>
+    <hr class="my-3">
+
+  
             </div>
         </div>
     </div>
 
-    <div class="col-md-6 mb-3">
-        <div class="card border-warning">
-            <div class="card-body">
-                <h4>📊 Compte Administrateur</h4>
-                <p><strong>Identifiant :</strong> admin</p>
-                <p><strong>Mot de passe :</strong> ********</p>
+    <h5 class="text-center mb-3">
+    Comptes de démonstration
+    </h5>
 
-                <a href="/rapport" class="btn btn-warning">
-                 📊 Accéder au rapport
-                </a>
+<p class="text-center text-muted mb-4">
+    Utilisez ces identifiants pour tester les différents espaces de l'application.
+</p>
+
+       <div class="row g-4 justify-content-center mt-2">
+
+    <div class="col-md-6">
+        <div class="card border-secondary shadow h-100 rounded-4">
+            <div class="card-body text-center">
+                <h5 class="card-title">👨‍🍳 Compte Employé</h5>
+
+                <div class="bg-light rounded p-3 mb-3">
+
+                    <strong>Email :</strong>
+                    <span>employe@exemple.com</span>
+
+                    <br><br>
+
+                    <strong>Mot de passe :</strong>
+                    <span>motdepasse</span>
+
+                </div>
+
+                <small class="text-muted">
+                    Saisissez ces identifiants dans le formulaire ci-dessus.
+                </small>
             </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-warning shadow h-100 rounded-4">
+            <div class="card-body text-center">
+                <h5 class="card-title">⚙️ Compte Administrateur</h5>
+
+                <div class="bg-light rounded p-3 mb-3">
+
+                    <strong>Email :</strong>
+                    <span>admin@exemple.com</span>
+
+                    <br><br>
+
+                    <strong>Mot de passe :</strong>
+                    <span>motdepasse</span>
+
+                </div>
+
+                <small class="text-muted">
+                    Saisissez ces identifiants dans le formulaire ci-dessus.
+                </small>
+            </div>
+        </div>
+    </div>
+
+</div>
+         </div>
         </div>
     </div>
 </div>

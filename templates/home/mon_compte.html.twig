@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1 class="mb-4">👤 Mon compte</h1>
+
+<div class="card shadow p-4 mb-4">
+    <h2>Mes commandes</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Commande</th>
+                <th>Menu</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    <td>#{{ commande.id }}</td>
+                    <td>{{ commande.menu }}</td>
+                    <td>{{ commande.date_prestation }}</td>
+                    <td>{{ commande.statut }}</td>
+                    <td>
+                        {% if commande.statut == 'En attente' %}
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="annuler">
+                                <input type="hidden" name="commande_id" value="{{ commande.id }}">
+                                <button class="btn btn-danger btn-sm">Annuler</button>
+                            </form>
+                        {% else %}
+                            {{ commande.statut }}
+                        {% endif %}
+
+                        {% if commande.statut == 'Terminée' %}
+                            <form method="post" class="mt-2">
+                                <input type="hidden" name="action" value="avis">
+                                <input type="hidden" name="commande_id" value="{{ commande.id }}">
+
+                                <select name="note" class="form-select mb-2">
+                                    <option value="5">5/5</option>
+                                    <option value="4">4/5</option>
+                                    <option value="3">3/5</option>
+                                    <option value="2">2/5</option>
+                                    <option value="1">1/5</option>
+                                </select>
+
+                                <input type="text" name="commentaire" class="form-control mb-2" placeholder="Votre avis">
+
+                                <button class="btn btn-success btn-sm">Donner un avis</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucune commande trouvée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

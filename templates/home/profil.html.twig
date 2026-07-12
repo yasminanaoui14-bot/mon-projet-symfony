@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1 class="mb-4">👤 Modifier mon profil</h1>
+
+<div class="card shadow p-4">
+    <form method="post">
+
+        <div class="mb-3">
+            <label>Nom</label>
+            <input type="text" name="nom" class="form-control" value="{{ utilisateur.nom }}">
+        </div>
+
+        <div class="mb-3">
+            <label>Prénom</label>
+            <input type="text" name="prenom" class="form-control" value="{{ utilisateur.prenom }}">
+        </div>
+
+        <div class="mb-3">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" value="{{ utilisateur.email }}">
+        </div>
+
+        <button class="btn btn-success">Enregistrer</button>
+
+        <a href="/mon-compte" class="btn btn-secondary ms-2">
+            Retour à mon compte
+        </a>
+    </form>
+</div>
+
+{% endblock %}

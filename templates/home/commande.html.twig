@@ -4,71 +4,98 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+    <div class="col-md-8">
 
-            <div class="card shadow">
-                <div class="card-body">
+    <div class="card shadow">
+    <div class="card-body">
 
-                    <h1 class="text-center mb-4">
-                        🍽️ Commander un menu
-                    </h1>
+    <h1 class="text-center mb-4">
+        🍽️ Commander un menu
+    </h1>
 
-                    <form>
+                    <form method="post">
 
                         <div class="mb-3">
                             <label>Nom</label>
-                            <input type="text" class="form-control w-75" placeholder="Votre nom">
+                            <input
+                                type="text"
+                                name="nom_client"
+                                class="form-control w-75"
+                                placeholder="Votre nom"
+                                required>
                         </div>
 
                         <div class="mb-3">
                             <label>Email</label>
-                            <input type="email" class="form-control w-75" placeholder="Votre email">
+                            <input
+                                type="email"
+                                name="email_client"
+                                class="form-control w-75"
+                                placeholder="Votre email"
+                                required>
                         </div>
 
                         <div class="mb-3">
                             <label>Adresse</label>
-                            <input type="text" class="form-control w-75" placeholder="Votre adresse">
+                            <input
+                                type="text"
+                                name="adresse"
+                                class="form-control w-75"
+                                placeholder="Votre adresse"
+                                required>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label>Date de prestation</label>
-                                <input type="date" class="form-control w-75">
+                                <input
+                                    type="date"
+                                    name="date_prestation"
+                                    class="form-control w-75"
+                                    required>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label>Heure</label>
-                                <input type="time" class="form-control w-75">
+                                <input
+                                    type="time"
+                                    name="heure_prestation"
+                                    class="form-control w-75"
+                                    required>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label>Téléphone</label>
-                                <input type="text" class="form-control w-75" placeholder="06 12 34 56 78">
+                                <input
+                                    type="text"
+                                    name="telephone"
+                                    class="form-control w-75"
+                                    placeholder="06 12 34 56 78"
+                                    required>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label>Nombre de personnes</label>
-                                <input type="number" class="form-control w-75" placeholder="Ex : 10">
+                                <input
+                                    type="number"
+                                    name="nombre_personnes"
+                                    class="form-control w-75"
+                                    placeholder="Ex : 10"
+                                    required>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Menu choisi</label>
-                            <select class="form-select w-75">
-                                <option>Menu Classique</option>
-                                <option>Menu Festif</option>
-                                <option>Menu Végétarien</option>
-                            </select>
-                        </div>
 
                         <div class="alert alert-info">
                             Réduction de 10% appliquée à partir de 5 personnes.
                         </div>
 
-                        <button class="btn btn-success btn-lg mt-3">
-                            ✅ Valider la commande
+                        <input type="hidden" name="menu_id" value="{{ app.request.get('menu') }}">
+
+                        <button type="submit" class="btn btn-success">
+                                ✅ Valider la commande
                         </button>
 
                     </form>

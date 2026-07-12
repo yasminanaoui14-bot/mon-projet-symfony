@@ -46,18 +46,20 @@
             </thead>
 
             <tbody>
+
+
                 {% for id, commande in commandes %}
                     <tr>
-                        <td>{{ commande.numero }}</td>
-                        <td>{{ commande.client }}<br><small>{{ commande.email }}</small></td>
+                        <td>#{{ commande.id }}</td>
+                        <td>{{ commande.nom_client }}<br><small>{{ commande.email_client }}</small></td>
                         <td>{{ commande.menu }}</td>
-                        <td>{{ commande.date }}</td>
+                        <td>{{ commande.date_prestation }}</td>
                         <td>
                             <span class="badge bg-primary">{{ commande.statut }}</span>
                         </td>
                         <td>
                             <form method="post">
-                                <input type="hidden" name="commande_id" value="{{ id }}">
+                                <input type="hidden" name="commande_id" value="{{ commande.id }}">
 
                                 <select name="statut" class="form-select form-select-sm mb-2">
                                     <option>Acceptée</option>
@@ -138,7 +140,32 @@
             </thead>
 
             <tbody>
-                {% for id, avisItem in avis %}
+
+                {% for avisItem in avis %}
+            <tr>
+    <td>{{ avisItem.client }}</td>
+    <td>{{ avisItem.note }}/5</td>
+    <td>{{ avisItem.commentaire }}</td>
+    <td>{{ avisItem.statut }}</td>
+    <td>
+        <form method="post">
+            <input type="hidden" name="action" value="avis">
+            <input type="hidden" name="avis_id" value="{{ avisItem.id }}">
+
+            <select name="decision" class="form-select form-select-sm">
+                <option value="Validé">Valider</option>
+                <option value="Refusé">Refuser</option>
+            </select>
+
+            <button class="btn btn-primary btn-sm mt-1">
+                OK
+            </button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+
+                 {#  {% for id, avisItem in avis %}
                     <tr>
                         <td>{{ avisItem.client }}</td>
                         <td>{{ avisItem.note }}</td>
@@ -175,7 +202,10 @@
 </td>
 
                     </tr>
-                {% endfor %}
+                {% endfor %
+                
+                 #}
+           
             </tbody>
         </table>
     </div>

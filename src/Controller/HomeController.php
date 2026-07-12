@@ -11,44 +11,172 @@ use PDO;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
-    public function index(): Response
-    {
-        return $this->render('home/index.html.twig');
-    }
+   #[Route('/', name: 'app_home')]
+public function index(): Response
+
+{
+
+    $pdo = new PDO(
+    'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
+    'root',
+    ''
+);
+
+    $stmtAvis = $pdo->query("SELECT * FROM avis WHERE statut = 'Validé' ORDER BY id DESC");
+    $avis = $stmtAvis->fetchAll(PDO::FETCH_ASSOC);
+
+    return $this->render('home/index.html.twig', [
+        'avis' => $avis
+    ]);
+}
 
     #[Route('/menus', name: 'app_menus')]
-    public function menus(): Response
+    public function menus(Request $request): Response
     {
+
     $pdo = new PDO(
-        'mysql:host=127.0.0.1;dbname=vite_gourmand;charset=utf8mb4',
+        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
         'root',
         ''
     );
 
+    if ($request->isMethod('POST')) {
+    $id = $request->request->get('commande_id');
+    $statut = $request->request->get('statut');
+
+    $stmt = $pdo->prepare('UPDATE commande SET statut = :statut WHERE id = :id');
+    $stmt->execute([
+        'statut' => $statut,
+        'id' => $id
+    ]);
+}
+
     $menus = $pdo->query('SELECT * FROM menu')->fetchAll(PDO::FETCH_ASSOC);
 
+
     return $this->render('home/menus.html.twig', [
-        'menus' => $menus
+    'menus' => $menus
     ]);
 }
 
 #[Route('/contact', name: 'app_contact')]
-public function contact(): Response
+public function contact(Request $request): Response
 {
-    return $this->render('home/contact.html.twig');
+    if ($request->isMethod('POST')) {
+        $pdo = new PDO(
+            'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
+            'root',
+            ''
+        );
+
+        $stmt = $pdo->prepare(
+            'INSERT INTO contact (nom, email, message) VALUES (:nom, :email, :message)'
+        );
+
+        $stmt->execute([
+            'nom' => $request->request->get('nom'),
+            'email' => $request->request->get('email'),
+            'message' => $request->request->get('message')
+        ]);
+
+       return $this->render('home/contact.html.twig', [
+    'success' => true
+]);
+}
+
+    return $this->render('home/contact.html.twig', [
+    'success' => false
+]);
 }
 
 #[Route('/login', name: 'app_login')]
-public function login(): Response
+public function login(Request $request): Response
 {
-    return $this->render('home/login.html.twig');
+    $erreur = null;
+
+    if ($request->isMethod('POST')) {
+        
+    $pdo = new PDO(
+    'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
+    'root',
+    ''
+);
+
+        $email = $request->request->get('email');
+        $motDePasse = $request->request->get('mot_de_passe');
+
+        $stmt = $pdo->prepare('SELECT * FROM utilisateur WHERE email = :email');
+        $stmt->execute([
+            'email' => $email
+        ]);
+
+        $utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($utilisateur && (
+            $motDePasse === $utilisateur['mot_de_passe']
+                || password_verify($motDePasse, $utilisateur['mot_de_passe'])
+        )) {
+            $request->getSession()->set('user_id', $utilisateur['id']);
+            $request->getSession()->set('nom', $utilisateur['nom']);
+            $request->getSession()->set('role', $utilisateur['role']);
+
+            return $this->redirectToRoute('app_home');
+        }
+
+        $erreur = 'Email ou mot de passe incorrect.';
+    }
+
+    return $this->render('home/login.html.twig', [
+        'erreur' => $erreur
+    ]);
 }
 
 #[Route('/register', name: 'app_register')]
-public function register(): Response
+public function register(Request $request): Response
 {
-    return $this->render('home/register.html.twig');
+    if ($request->isMethod('POST')) {
+        $pdo = new PDO(
+            'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
+            'root',
+            ''
+        );
+
+        $motDePasse = $request->request->get('mot_de_passe');
+
+        $verification = $pdo->prepare(
+        'SELECT id FROM utilisateur WHERE email = :email'
+);
+
+        $verification->execute([
+        'email' => $request->request->get('email')
+]);
+
+        if ($verification->fetch()) {
+    return $this->render('home/register.html.twig', [
+    'success' => false,
+    'error' => null
+]);
+}
+
+        $stmt = $pdo->prepare(
+            'INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, role)
+             VALUES (:nom, :prenom, :email, :mot_de_passe, :role)'
+        );
+
+        $stmt->execute([
+            'nom' => $request->request->get('nom'),
+            'prenom' => $request->request->get('prenom'),
+            'email' => $request->request->get('email'),
+            'mot_de_passe' => password_hash($motDePasse, PASSWORD_DEFAULT),
+            'role' => 'ROLE_USER'
+        ]);
+
+       return $this->redirectToRoute('app_login');
+    }
+
+    return $this->render('home/register.html.twig', [
+        'success' => false
+    ]);
 }
 
 #[Route('/menu', name: 'app_detail')]
@@ -70,10 +198,42 @@ public function menuFestif(): Response
 }
 
 #[Route('/commande', name: 'app_commande')]
-public function commande(): Response
+public function commande(Request $request): Response
 {
+    $pdo = new PDO(
+        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
+        'root',
+        ''
+    );
+
+    if ($request->isMethod('POST')) {
+        $stmt = $pdo->prepare("
+            INSERT INTO commande 
+            (utilisateur_id, menu_id, nom_client, email_client, adresse, telephone, date_prestation, heure_prestation, nombre_personnes, statut, prix_total)
+            VALUES
+            (:utilisateur_id, :menu_id, :nom_client, :email_client, :adresse, :telephone, :date_prestation, :heure_prestation, :nombre_personnes, 'En attente', :prix_total)
+        ");
+
+        $stmt->execute([
+            'utilisateur_id' => $request->getSession()->get('user_id'),
+            'menu_id' => $request->request->get('menu_id'),
+            'nom_client' => $request->request->get('nom_client'),
+            'email_client' => $request->request->get('email_client'),
+            'adresse' => $request->request->get('adresse'),
+            'telephone' => $request->request->get('telephone'),
+            'date_prestation' => $request->request->get('date_prestation'),
+            'heure_prestation' => $request->request->get('heure_prestation'),
+            'nombre_personnes' => $request->request->get('nombre_personnes'),
+            'prix_total' => 0
+        ]);
+
+        return $this->redirectToRoute('app_mon_compte');
+    }
+
     return $this->render('home/commande.html.twig');
 }
+
+
 
 #[Route('/rapport', name: 'app_rapport')]
 public function rapport(): Response
@@ -82,101 +242,136 @@ public function rapport(): Response
 }
 
 #[Route('/employe', name: 'app_employe')]
-public function employe(Request $request, SessionInterface $session): Response
+public function employe(Request $request): Response
 {
-    if (!$session->has('commandes')) {
-        $session->set('commandes', [
-            1 => [
-                'numero' => '#001',
-                'client' => 'Yasmina Nao',
-                'email' => 'yasmina@example.com',
-                'menu' => 'Menu Classique',
-                'date' => '20/07/2026',
-                'statut' => 'Acceptée'
-            ],
-            2 => [
-                'numero' => '#002',
-                'client' => 'Florian Clau',
-                'email' => 'florian@example.com',
-                'menu' => 'Menu Festif',
-                'date' => '22/07/2026',
-                'statut' => 'En préparation'
-            ],
-            3 => [
-                'numero' => '#003',
-                'client' => 'Riad Inao',
-                'email' => 'riad@example.com',
-                'menu' => 'Menu Végétarien',
-                'date' => '25/07/2026',
-                'statut' => 'En cours de livraison'
-            ],
-        ]);
-    }
+    $pdo = new PDO(
+        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
+        'root',
+        ''
+    );
 
-    $commandes = $session->get('commandes');
+    $stmt = $pdo->query("
+        SELECT c.id,
+               c.nom_client,
+               c.email_client,
+               c.date_prestation,
+               c.statut,
+               m.titre AS menu
+        FROM commande c
+        LEFT JOIN menu m ON c.menu_id = m.id
+        ORDER BY c.date_prestation ASC
+    ");
 
-    if (!$session->has('avis')) {
-    $session->set('avis', [
-        1 => [
-            'client' => 'Yasmina Nao',
-            'note' => '⭐⭐⭐⭐⭐',
-            'commentaire' => 'Excellent service, menus délicieux.',
-            'statut' => 'En attente'
-        ],
-        2 => [
-            'client' => 'Florian Clau',
-            'note' => '⭐⭐⭐⭐',
-            'commentaire' => 'Livraison rapide et bonne qualité.',
-            'statut' => 'En attente'
-        ]
-    ]);
+    $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmtAvis = $pdo->query("
+    SELECT *
+    FROM avis
+    ORDER BY id DESC
+");
+
+    $avis = $stmtAvis->fetchAll(PDO::FETCH_ASSOC);
+
+    return $this->render('home/employe.html.twig', [
+    'commandes' => $commandes,
+    'avis' => $avis
+]);
+
 }
-
-$avis = $session->get('avis');
-
-    if ($request->isMethod('POST')) {
-        $id = $request->request->get('commande_id');
-        $nouveauStatut = $request->request->get('statut');
-
-        $action = $request->request->get('action');
-
-if ($action === 'avis') {
-    $avisId = $request->request->get('avis_id');
-    $decision = $request->request->get('decision');
-
-    if (isset($avis[$avisId])) {
-        $avis[$avisId]['statut'] = $decision;
-        $session->set('avis', $avis);
-    }
-}
-
-        if (isset($commandes[$id])) {
-            $commandes[$id]['statut'] = $nouveauStatut;
-            $session->set('commandes', $commandes);
-        }
-    }
-
-    $filtreStatut = $request->query->get('statut');
-    $recherche = $request->query->get('recherche');
-
-    $commandesFiltrees = array_filter($commandes, function ($commande) use ($filtreStatut, $recherche) {
-        $okStatut = !$filtreStatut || $filtreStatut === 'Tous' || $commande['statut'] === $filtreStatut;
-        $okRecherche = !$recherche || stripos($commande['client'], $recherche) !== false || stripos($commande['email'], $recherche) !== false;
-
-        return $okStatut && $okRecherche;
-    });
-
-        return $this->render('home/employe.html.twig', [
-     'commandes' => $commandesFiltrees,
-      'avis' => $avis
-    ]);
-}
-
-
 
 #[Route('/menu-vegetarien', name: 'app_menu_vegetarien')]
 public function menuVegetarien(): Response
 {
     return $this->render('home/menu_vegetarien.html.twig');
 }
+
+#[Route('/admin', name: 'app_admin')]
+public function admin(Request $request): Response
+{
+    if ($request->getSession()->get('role') !== 'ROLE_ADMIN') {
+    return $this->redirectToRoute('app_login');
 }
+return $this->render('home/admin.html.twig');
+}
+
+#[Route('/admin-auto-login', name: 'app_admin_auto_login')]
+public function adminAutoLogin(Request $request): Response
+{
+    $request->getSession()->set('user_id', 3);
+    $request->getSession()->set('nom', 'Admin');
+    $request->getSession()->set('role', 'ROLE_ADMIN');
+
+    return $this->redirectToRoute('app_admin');
+}
+
+#[Route('/logout', name: 'app_logout')]
+public function logout(Request $request): Response
+{
+    $request->getSession()->clear();
+
+    return $this->redirectToRoute('app_home');
+}
+
+#[Route('/mon-compte', name: 'app_mon_compte')]
+public function monCompte(Request $request): Response
+{
+    $pdo = new PDO( 'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4','root',''
+    );
+
+        if ($request->isMethod('POST')) {
+    $action = $request->request->get('action');
+
+    if ($action === 'annuler') {
+        $commandeId = $request->request->get('commande_id');
+
+        $stmt = $pdo->prepare("
+            UPDATE commande
+            SET statut = 'Annulée'
+            WHERE id = :id
+        ");
+
+        $stmt->execute([
+            'id' => $commandeId
+        ]);
+
+        return $this->redirectToRoute('app_mon_compte');
+    }
+
+    if ($action === 'avis') {
+        $note = $request->request->get('note');
+        $commentaire = $request->request->get('commentaire');
+
+        $stmt = $pdo->prepare("
+            INSERT INTO avis (client, note, commentaire, statut)
+            VALUES ('Utilisateur', :note, :commentaire, 'En attente')
+        ");
+
+        $stmt->execute([
+            'note' => $note,
+            'commentaire' => $commentaire
+        ]);
+
+        return $this->redirectToRoute('app_mon_compte');
+    }
+}
+
+
+    $stmt = $pdo->prepare("
+    SELECT c.id, c.date_prestation, c.statut, m.titre AS menu
+    FROM commande c
+    LEFT JOIN menu m ON c.menu_id = m.id
+    ORDER BY c.date_prestation DESC
+");
+
+    $stmt->execute();
+
+    $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $this->render('home/mon_compte.html.twig', [
+        'commandes' => $commandes
+    ]);
+}
+
+}
+
+
