@@ -8,6 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use PDO;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class HomeController extends AbstractController
 {
@@ -372,6 +375,170 @@ public function monCompte(Request $request): Response
     ]);
 }
 
+
+#[Route('/mot-de-passe-oublie', name: 'app_forgot_password')]
+public function forgotPassword(
+    Request $request,
+    MailerInterface $mailer
+): Response {
+    $message = null;
+    $error = null;
+
+    if ($request->isMethod('POST')) {
+        $emailUtilisateur = trim((string) $request->request->get('email'));
+
+        if (!filter_var($emailUtilisateur, FILTER_VALIDATE_EMAIL)) {
+            $error = 'Veuillez saisir une adresse e-mail valide.';
+        } else {
+            $pdo = new PDO(
+                'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
+                'root',
+                ''
+            );
+
+            $stmt = $pdo->prepare(
+                'SELECT id, email
+                 FROM utilisateur
+                 WHERE email = :email'
+            );
+
+            $stmt->execute([
+                'email' => $emailUtilisateur
+            ]);
+
+            $utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $message = 'Si cette adresse existe, un lien de réinitialisation a été envoyé.';
+
+            if ($utilisateur) {
+                $token = bin2hex(random_bytes(32));
+                $expiration = (new \DateTime('+1 hour'))->format('Y-m-d H:i:s');
+
+                $pdo->prepare(
+                    'DELETE FROM password_reset
+                     WHERE utilisateur_id = :utilisateur_id'
+                )->execute([
+                    'utilisateur_id' => $utilisateur['id']
+                ]);
+
+                $stmt = $pdo->prepare(
+                    'INSERT INTO password_reset
+                        (utilisateur_id, token, expires_at)
+                     VALUES
+                        (:utilisateur_id, :token, :expires_at)'
+                );
+
+                $stmt->execute([
+                    'utilisateur_id' => $utilisateur['id'],
+                    'token' => $token,
+                    'expires_at' => $expiration
+                ]);
+
+                $lien = $this->generateUrl(
+                    'app_reset_password',
+                    ['token' => $token],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+
+                $email = (new Email())
+                    ->from('no-reply@vite-gourmand.test')
+                    ->to($utilisateur['email'])
+                    ->subject('Réinitialisation de votre mot de passe')
+                    ->html(
+                        '<h2>Réinitialisation du mot de passe</h2>
+                        <p>Cliquez sur le lien suivant :</p>
+                        <p><a href="' . $lien . '">Réinitialiser mon mot de passe</a></p>
+                        <p>Ce lien expire dans une heure.</p>'
+                    );
+
+                $mailer->send($email);
+            }
+        }
+    }
+
+    return $this->render('home/forgot_password.html.twig', [
+        'message' => $message,
+        'error' => $error
+    ]);
 }
 
+#[Route('/reset-password/{token}', name: 'app_reset_password')]
+public function resetPassword(
+    string $token,
+    Request $request
+): Response {
+    $pdo = new PDO(
+        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
+        'root',
+        ''
+    );
 
+    $stmt = $pdo->prepare(
+        'SELECT pr.id, pr.utilisateur_id, pr.expires_at, pr.utilise
+         FROM password_reset pr
+         WHERE pr.token = :token'
+    );
+
+    $stmt->execute([
+        'token' => $token
+    ]);
+
+    $reset = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (
+        !$reset ||
+        $reset['utilise'] == 1 ||
+        strtotime($reset['expires_at']) < time()
+    ) {
+        return $this->render('home/reset_password.html.twig', [
+            'error' => 'Ce lien est invalide ou a expiré.',
+            'success' => null
+        ]);
+    }
+
+    $error = null;
+    $success = null;
+
+    if ($request->isMethod('POST')) {
+        $motDePasse = (string) $request->request->get('mot_de_passe');
+        $confirmation = (string) $request->request->get('confirmation');
+
+        if (strlen($motDePasse) < 10) {
+            $error = 'Le mot de passe doit contenir au moins 10 caractères.';
+        } elseif ($motDePasse !== $confirmation) {
+            $error = 'Les deux mots de passe ne correspondent pas.';
+        } else {
+            $motDePasseHash = password_hash($motDePasse, PASSWORD_DEFAULT);
+
+            $stmt = $pdo->prepare(
+                'UPDATE utilisateur
+                 SET mot_de_passe = :mot_de_passe
+                 WHERE id = :id'
+            );
+
+            $stmt->execute([
+                'mot_de_passe' => $motDePasseHash,
+                'id' => $reset['utilisateur_id']
+            ]);
+
+            $stmt = $pdo->prepare(
+                'UPDATE password_reset
+                 SET utilise = 1
+                 WHERE id = :id'
+            );
+
+            $stmt->execute([
+                'id' => $reset['id']
+            ]);
+
+            $success = 'Votre mot de passe a été modifié avec succès.';
+        }
+    }
+
+    return $this->render('home/reset_password.html.twig', [
+        'error' => $error,
+        'success' => $success
+    ]);
+}
+
+}
