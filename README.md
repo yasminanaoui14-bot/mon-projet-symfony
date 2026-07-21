@@ -1,137 +1,156 @@
-# Vite & Gourmand
+# 🍽️ Vite & Gourmand
 
-Application web développée dans le cadre de l'ECF GRADUATE Développeur Web et Web Mobile.
+Projet réalisé dans le cadre de l'Évaluation en Cours de Formation (ECF) du titre professionnel **Développeur Web et Web Mobile**.
 
-## Objectif
+## 📖 Présentation
 
-Créer une application permettant à un traiteur de présenter ses menus, gérer les commandes, les utilisateurs, les employés, les avis clients et le contact.
+**Vite & Gourmand** est une application web développée avec **Symfony** permettant à une entreprise de traiteur de présenter ses menus, gérer les commandes de ses clients et administrer son activité grâce à un espace Employé et Administrateur.
 
-## Technologies prévues
+L'application propose différents espaces selon le rôle de l'utilisateur afin de répondre aux besoins de gestion de l'entreprise.
 
+---
+
+# ✨ Fonctionnalités
+
+## 👤 Espace Utilisateur
+
+- Création de compte
+- Connexion / Déconnexion
+- Réinitialisation du mot de passe par e-mail
+- Consultation des menus
+- Recherche et filtres des menus
+- Consultation du détail des menus
+- Création d'une commande
+- Consultation et annulation des commandes
+- Modification du profil
+- Dépôt d'avis
+
+---
+
+## 👨‍🍳 Espace Employé
+
+- Gestion des commandes
+- Modification du statut des commandes
+- Validation ou refus des avis clients
+- Recherche des commandes par client ou statut
+
+---
+
+## 👑 Espace Administrateur
+
+- Création de comptes employés
+- Désactivation d'un employé
+- Tableau de bord administratif
+- Statistiques des commandes
+- Calcul du chiffre d'affaires
+- Rapport imprimable (PDF)
+- Graphiques interactifs avec Chart.js
+
+---
+
+# 📊 Rapport Administrateur
+
+Le tableau de bord permet de consulter :
+
+- Nombre total de commandes
+- Chiffre d'affaires
+- Panier moyen
+- Menu le plus commandé
+- Répartition des commandes
+- Filtres par menu et période
+- Impression du rapport
+
+---
+
+# 🛠️ Technologies utilisées
+
+- PHP 8
 - Symfony
 - Twig
-- MySQL
-- MongoDB
-- HTML
-- CSS
-- Bootstrap
+- Bootstrap 5
 - JavaScript
+- Chart.js
+- MySQL
+- PDO
+- Mailtrap
+- Git
 - GitHub
 
-## Installation
+---
 
-### Prérequis
+# ⚙️ Installation
 
-- PHP 8.2+
-- Composer
-- Symfony CLI
-- MySQL
+Cloner le projet :
 
-### Installation du projet
-
-Cloner le dépôt :
-
-git clone URL_DU_PROJET
+```bash
+git clone https://github.com/yasminanaoui14-bot/mon-projet-symfony.git
+```
 
 Installer les dépendances :
 
+```bash
 composer install
+```
 
-Configurer la base de données dans le fichier .env
+Configurer le fichier `.env`.
 
-Créer la base :
+Créer la base de données puis importer le fichier SQL fourni.
 
-php bin/console doctrine:database:create
+Lancer le serveur Symfony :
 
-Lancer le serveur :
+```bash
+symfony serve
+```
 
-symfony server:start
+---
 
+# 📁 Structure du projet
+
+- `/src` : Contrôleurs et logique métier
+- `/templates` : Vues Twig
+- `/public` : Ressources publiques
+- `/config` : Configuration Symfony
+- `/sql` : Base de données
+
+---
+
+# 🔒 Sécurité
+
+- Authentification sécurisée
+- Gestion des rôles (Utilisateur, Employé, Administrateur)
+- Hachage des mots de passe
+- Validation des formulaires
+- Protection des espaces selon les rôles
+
+
+---
+
+# 📷 Captures d'écran
+
+Des captures d'écran sont disponibles dans le rapport du projet.
+
+---
 
 ## Comptes de démonstration
 
 ### Utilisateur
-
-Email : yasmina@example.com
-
-Mot de passe : ********
+Email : yasmina3@test.com
+Mot de passe : Client2026.
 
 ### Employé
-
-Email : employe@vite-gourmand.fr
-
-Mot de passe : ********
+Email : Maya@test.com
+Mot de passe : Employe2026.
 
 ### Administrateur
+Email : admin@exemple.com
+Mot de passe : motdepasse
 
-Email : admin@vite-gourmand.fr
-
-Mot de passe : ********
-
-
-## Fonctionnalités réalisées
-
-### Utilisateur
-
-- Consultation des menus
-- Consultation du détail des menus
-- Inscription
-- Connexion
-- Formulaire de contact
-- Commande de prestation
-
-### Employé
-
-- Consultation des commandes
-- Filtre par statut
-- Recherche client
-- Modification du statut des commandes
-- Annulation avec motif
-- Validation des avis clients
-
-### Administrateur
-
-- Consultation du rapport
-- Statistiques des commandes
-- Chiffre d'affaires
-
-## Structure du projet
-
-src/
- ├── Controller/
-templates/
- ├── home/
-public/
-sql/
- └── database.sql
-
- Projet ECF Vite & Gourmand
-
- ## Base de données
-
-L'application utilise une base de données MySQL.
-
-Nom de la base :
-vite_gourmand
-
-Tables principales :
-- utilisateur
-- menu
-- commande
-- contact
-
-Le script SQL complet est disponible dans :
-
-```sql
-sql/database.sql
-```
-
-Ce script permet de créer les tables et d'insérer des données de démonstration.
+---
 
 ## Gestion de projet
 
 Trello :
-https://trello.com/b/ay16cFaw/ecf-vite-gourmand
+https://trello.com/invite/b/6a3565114d739610b8d04f50/ATTI7747a835e505e67dcf155a8c704cef7205ECCA8B/ecf-vite-gourmand
 
 ## Dépôt GitHub
 
@@ -140,20 +159,14 @@ https://github.com/yasminanaoui14-bot/mon-projet-symfony
 
 ## Déploiement
 
-Lien de l'application :
+Lien de l'application : 
+https://mon-projet-symfony-production.up.railway.app 
 
+---
 
+# 👩‍💻 Réalisé par
 
-## Comptes de démonstration
+Yasmina Naoui
 
-### Utilisateur
-Email : yasmina@example.com
-Mot de passe : ******
-
-### Employé
-Email : employe@example.com
-Mot de passe : ******
-
-### Administrateur
-Email : admin@example.com
-Mot de passe : ******
+Projet réalisé dans le cadre de l'ECF du titre professionnel **Développeur Web et Web Mobile**.
+2026
