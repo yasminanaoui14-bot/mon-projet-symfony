@@ -2,38 +2,448 @@
 
 {% block body %}
 
-<h1>Rapport administrateur</h1>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
 
-<div class="card mb-3">
+    <div>
+        <h1 class="fw-bold mb-1">📊 Rapport administrateur</h1>
+
+        <p class="text-muted mb-1">
+            Analyse des commandes et du chiffre d’affaires de Vite & Gourmand.
+        </p>
+
+        <small class="text-muted">
+            Données actualisées le
+            {{ "now"|date("d/m/Y à H:i") }}
+        </small>
+    </div>
+
+    <button
+        type="button"
+        class="btn btn-outline-success"
+        onclick="window.print()"
+    >
+        🖨️ Imprimer le rapport
+    </button>
+
+</div>
+
+{# FILTRES #}
+<div class="card shadow-sm border-0 mb-4">
     <div class="card-body">
-        <h2>Statistiques</h2>
 
-        <p><strong>Nombre total de commandes :</strong> 12</p>
-        <p><strong>Menu le plus commandé :</strong> Menu Classique</p>
-        <p><strong>Chiffre d'affaires :</strong> 1 240 €</p>
+        <h2 class="h5 mb-3">🔎 Filtrer les statistiques</h2>
+
+        <form method="get"
+              action="{{ path('app_rapport') }}"
+              class="row g-3 align-items-end">
+
+            <div class="col-md-4">
+                <label for="menu" class="form-label">Menu</label>
+
+                <select id="menu" name="menu" class="form-select">
+                    <option value="">Tous les menus</option>
+
+                    {% for menuItem in menus %}
+                        <option
+                            value="{{ menuItem.titre }}"
+                            {% if menuSelectionne == menuItem.titre %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ menuItem.titre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label for="date_debut" class="form-label">
+                    Date de début
+                </label>
+
+                <input
+                    type="date"
+                    id="date_debut"
+                    name="date_debut"
+                    class="form-control"
+                    value="{{ dateDebut }}"
+                >
+            </div>
+
+            <div class="col-md-3">
+                <label for="date_fin" class="form-label">
+                    Date de fin
+                </label>
+
+                <input
+                    type="date"
+                    id="date_fin"
+                    name="date_fin"
+                    class="form-control"
+                    value="{{ dateFin }}"
+                >
+            </div>
+
+            <div class="col-md-2 d-grid gap-2">
+                <button type="submit" class="btn btn-success">
+                    Filtrer
+                </button>
+
+                <a href="{{ path('app_rapport') }}"
+                   class="btn btn-secondary">
+                    Réinitialiser
+                </a>
+            </div>
+
+        </form>
     </div>
 </div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Menu</th>
-            <th>Nombre de commandes</th>
-            <th>Chiffre d'affaires</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Menu Classique</td>
-            <td>8</td>
-            <td>640 €</td>
-        </tr>
-        <tr>
-            <td>Menu Festif</td>
-            <td>4</td>
-            <td>600 €</td>
-        </tr>
-    </tbody>
-</table>
+{# CARTES STATISTIQUES #}
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+                    <p class="text-muted mb-1">Commandes</p>
+
+                    <h2 class="fw-bold mb-0">
+                        {{ totalCommandes }}
+                    </h2>
+                </div>
+
+                <div class="fs-1">🛒</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+                    <p class="text-muted mb-1">Chiffre d’affaires</p>
+
+                    <h2 class="fw-bold text-success mb-0">
+                        {{ chiffreAffaires|number_format(2, ',', ' ') }} €
+                    </h2>
+                </div>
+
+                <div class="fs-1">💶</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+                    <p class="text-muted mb-1">Panier moyen</p>
+
+                    <h2 class="fw-bold mb-0">
+                        {{ panierMoyen|number_format(2, ',', ' ') }} €
+                    </h2>
+                </div>
+
+                <div class="fs-1">🧾</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body d-flex justify-content-between align-items-center">
+
+                <div>
+                    <p class="text-muted mb-1">
+                        Menu le plus commandé
+                    </p>
+
+                    <h3 class="mb-0">
+                        <span class="badge bg-success fs-6 px-3 py-2">
+                            🏆 {{ menuPlusCommande }}
+                </span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{# GRAPHIQUE #}
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-header bg-white py-3">
+        <h2 class="h4 mb-0">
+            📈 Répartition des commandes par menu
+        </h2>
+    </div>
+
+    <div class="card-body">
+        <div style="position: relative; height: 340px;">
+            <canvas id="graphiqueCommandes"></canvas>
+        </div>
+    </div>
+
+</div>
+
+{# TABLEAU #}
+<div class="card shadow-sm border-0">
+
+    <div class="card-header bg-white py-3">
+        <h2 class="h4 mb-0">Détail des ventes par menu</h2>
+    </div>
+
+    <div class="card-body p-0">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th class="py-3">Menu</th>
+
+                        <th class="py-3 text-center">
+                            Nombre de commandes
+                        </th>
+
+                        <th class="py-3 text-end">
+                            Chiffre d’affaires
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for statistique in statistiques %}
+
+                        <tr>
+                            <td class="fw-bold">
+                                {% if 'Classique' in statistique.menu %}
+                                    🍽️
+                                {% elseif 'Festif' in statistique.menu %}
+                                    🎉
+                                {% elseif 'Végétarien' in statistique.menu %}
+                                    🥗
+                                {% else %}
+                                    🍴
+                                {% endif %}
+
+                                {{ statistique.menu }}
+                            </td>
+
+                            <td class="text-center">
+                                <span class="badge bg-primary rounded-pill px-3 py-2">
+                                    {{ statistique.nombre_commandes }}
+                                    commande{% if statistique.nombre_commandes != 1 %}s{% endif %}
+                                </span>
+                            </td>
+
+                            <td class="text-end">
+                                <span class="fw-bold text-success">
+                                    {{ statistique.chiffre_affaires }} €
+                            </span>
+                        </td>
+                        </tr>
+
+                    {% else %}
+
+                        <tr>
+                            <td colspan="3"
+                                class="text-center text-muted py-4">
+                                Aucune commande trouvée pour ces critères.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+                <tfoot class="table-light">
+                    <tr>
+                        <th>Total</th>
+
+                        <th class="text-center">
+                            {{ totalCommandes }}
+                            commande{% if totalCommandes != 1 %}s{% endif %}
+                        </th>
+
+                        <th class="text-end text-success">
+                            {{ chiffreAffaires|number_format(2, ',', ' ') }}
+                            €
+                        </th>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+        Chart.defaults.font.family = "'Segoe UI', sans-serif";
+        Chart.defaults.font.size = 13;
+        Chart.defaults.color = "#555";
+
+    const graphique = document.getElementById('graphiqueCommandes');
+
+    const nomsMenus = [
+        {% for statistique in statistiques %}
+            {{ statistique.menu|json_encode|raw }}
+            {% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    const nombresCommandes = [
+        {% for statistique in statistiques %}
+            {{ statistique.nombre_commandes }}
+            {% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    new Chart(graphique, {
+        type: 'bar',
+
+        data: {
+            labels: nomsMenus,
+
+            datasets: [{
+    label: 'Nombre de commandes',
+    data: nombresCommandes,
+
+    backgroundColor: [
+        "#0d6efd",
+        "#fd7e14",
+        "#198754"
+    ],
+
+    borderColor: [
+        "#0d6efd",
+        "#fd7e14",
+        "#198754"
+    ],
+
+    borderWidth: 2,
+    borderRadius: 8
+}]
+        },
+
+options: {
+    responsive: true,
+    maintainAspectRatio: false,
+
+    animation: {
+        duration: 1200,
+        easing: 'easeOutQuart'
+    },
+
+    interaction: {
+        intersect: false,
+        mode: 'index'
+    },
+
+    plugins: {
+        legend: {
+            display: false
+        },
+
+        tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            padding: 12,
+            cornerRadius: 8,
+
+            callbacks: {
+                label: function(context) {
+                    const valeur = context.raw;
+
+                    return valeur + (
+                        valeur > 1
+                            ? ' commandes'
+                            : ' commande'
+                    );
+                }
+            }
+        }
+    },
+
+    scales: {
+        x: {
+            grid: {
+                display: false
+            }
+        },
+
+        y: {
+            beginAtZero: true,
+
+            ticks: {
+                precision: 0,
+                stepSize: 1
+            },
+
+            title: {
+                display: true,
+                text: 'Nombre de commandes'
+            }
+        }
+    }
+}
+    });
+
+</script>
+
+<style>
+    @media print {
+        header,
+        footer,
+        form,
+        .btn {
+            display: none !important;
+        }
+
+        body {
+            background: white !important;
+        }
+
+        .card {
+            box-shadow: none !important;
+            break-inside: avoid;
+        }
+
+        .container,
+        .container-fluid {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+    }
+
+    .card{
+    transition: all .25s ease;
+    }
+
+    .card:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.12) !important;
+    }
+</style>
+
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-body">
+        <h6 class="fw-bold mb-2">ℹ Informations</h6>
+
+        <ul class="mb-0">
+            <li>Les statistiques sont calculées automatiquement.</li>
+            <li>Les données sont mises à jour à chaque chargement de la page.</li>
+            <li>Le rapport peut être imprimé ou enregistré en PDF.</li>
+        </ul>
+    </div>
+</div>
 
 {% endblock %}

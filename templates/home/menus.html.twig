@@ -8,57 +8,67 @@
     <div class="card-body">
         <h2 class="h4 mb-3">Rechercher un menu</h2>
 
-        <form class="row g-3">
+        <form method="get" action="{{ path('app_menus') }}" class="row g-3">
             <div class="col-md-3">
-                <label class="form-label">Prix maximum</label>
-                <input type="number" class="form-control" placeholder="Ex : 150">
+                <label class="form-label">Nombre de personnes</label>
+
+                <input
+                    type="number"
+                    name="personnes"
+                    class="form-control"
+                    placeholder="Ex : 20"
+                    value="{{ personnesSelectionnees }}">
             </div>
 
             <div class="col-md-3">
                 <label class="form-label">Fourchette de prix</label>
-                <select class="form-select">
-                    <option>Tous les prix</option>
-                    <option>Moins de 100 €</option>
-                    <option>100 € à 200 €</option>
-                    <option>Plus de 200 €</option>
+                <select name="prix" class="form-select">
+                    <option value="">Tous les prix</option>
+                    <option value="moins_100">Moins de 100 €</option>
+                    <option value="100_200">100 € à 200 €</option>
+                    <option value="plus_200">Plus de 200 €</option>
                 </select>
             </div>
 
             <div class="col-md-2">
                 <label class="form-label">Thème</label>
-<select class="form-select">
-    <option>Tous</option>
-    <option>Classique</option>
-    <option>Festif</option>
-    <option>Santé</option>
+                <select name="theme" class="form-select">
+    <option value="">Tous</option>
+
+    <option value="Traditionnel"
+        {% if themeSelectionne == 'Traditionnel' %}selected{% endif %}>
+        Traditionnel
+    </option>
+
+    <option value="Festif"
+        {% if themeSelectionne == 'Festif' %}selected{% endif %}>
+        Festif
+    </option>
+
+    <option value="Végétarien"
+        {% if themeSelectionne == 'Végétarien' %}selected{% endif %}>
+        Végétarien
+    </option>
 </select>
             </div>
 
             <div class="col-md-2">
                 <label class="form-label">Régime</label>
-<select class="form-select">
-    <option>Tous</option>
-    <option>Végétarien</option>
+<select name="regime" class="form-select">
+    <option value="">Tous</option>
+    <option value="vegetarien">Végétarien</option>
 </select>
 
             </div>
 
-            <div class="col-md-2">
-                <label class="form-label">Personnes min.</label>
-                <input type="number" class="form-control" placeholder="Ex : 4">
-            </div>
-
             <div class="col-12">
-                <button type="button" class="btn btn-success">Filtrer</button>
+               <button type="submit" class="btn btn-success">Filtrer</button>
                 <button type="reset" class="btn btn-secondary">Réinitialiser</button>
             </div>
         </form>
     </div>
 </div>
 
-<input type="text"
-       class="form-control mb-4"
-       placeholder="Rechercher un menu...">
 
 {% for menu in menus %}
 <div class="card shadow mb-4">

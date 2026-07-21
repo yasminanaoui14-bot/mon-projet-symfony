@@ -2,35 +2,113 @@
 
 {% block body %}
 
-<h1>⚙️ Espace Administrateur</h1>
+<h1 class="mb-4">⚙️ Espace Administrateur</h1>
+
+{% if message %}
+<div class="alert alert-success">
+    {{ message }}
+</div>
+{% endif %}
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
 
 <div class="card shadow mb-4">
     <div class="card-body">
-        <h2>Créer un employé</h2>
+
+        <h2>Créer un compte employé</h2>
 
         <form method="post">
+
+            <input type="hidden" name="action" value="creer_employe">
+
             <div class="mb-3">
-                <label>Nom</label>
-                <input type="text" name="nom" class="form-control">
+                <label class="form-label">Adresse e-mail</label>
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    required>
             </div>
 
             <div class="mb-3">
-                <label>Prénom</label>
-                <input type="text" name="prenom" class="form-control">
+                <label class="form-label">Mot de passe provisoire</label>
+                <input
+                    type="password"
+                    name="mot_de_passe"
+                    class="form-control"
+                    minlength="10"
+                    required>
             </div>
 
-            <div class="mb-3">
-                <label>Email</label>
-                <input type="email" name="email" class="form-control">
-            </div>
+            <button class="btn btn-success">
+                ➕ Créer le compte
+            </button>
 
-            <div class="mb-3">
-                <label>Mot de passe</label>
-                <input type="password" name="mot_de_passe" class="form-control">
-            </div>
-
-            <button class="btn btn-success">Créer l'employé</button>
         </form>
+
+    </div>
+</div>
+
+
+<div class="card shadow">
+    <div class="card-body">
+
+        <h2>Employés enregistrés</h2>
+
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for employe in employes %}
+    <tr>
+        <td>{{ employe.id }}</td>
+        <td>{{ employe.nom }}</td>
+        <td>{{ employe.prenom }}</td>
+        <td>{{ employe.email }}</td>
+        <td>{{ employe.role }}</td>
+
+        <td>
+            {% if employe.role == 'ROLE_EMPLOYE' %}
+                <form method="post" action="{{ path('app_admin') }}">
+                    <input type="hidden" name="action" value="desactiver_employe">
+                    <input type="hidden" name="employe_id" value="{{ employe.id }}">
+
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Désactiver
+                    </button>
+                </form>
+            {% else %}
+                <span class="badge bg-secondary">
+                    Désactivé
+                </span>
+            {% endif %}
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="6">Aucun employé.</td>
+    </tr>
+{% endfor %}
+
+            </tbody>
+
+        </table>
+
     </div>
 </div>
 

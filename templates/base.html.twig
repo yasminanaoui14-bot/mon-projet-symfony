@@ -225,10 +225,11 @@ form {
             <a href="/" class="btn btn-primary">🏠 Accueil</a>
             <a href="/menus" class="btn btn-success">📖 Menus</a>
             <a href="/contact" class="btn btn-info">✉️ Contact</a>
-            {% if app.session.get('user_id') %}
+        {% if app.session.get('user_id') %}
+        {% if app.session.get('user_id') and app.session.get('role') != 'ROLE_ADMIN' and app.session.get('role') != 'ROLE_EMPLOYE' and app.session.get('role') != 'employe' %}
+            <a href="/mon-compte" class="btn btn-secondary">👤 Mon compte</a>
 
-
-        <a href="/mon-compte" class="btn btn-secondary">👤 Mon compte</a>
+{% endif %}
 
     {% if app.session.get('role') == 'ROLE_ADMIN' %}
         <a href="/admin" class="btn btn-dark">⚙️ Admin</a>
