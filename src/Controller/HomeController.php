@@ -14,16 +14,29 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class HomeController extends AbstractController
 {
+    private function getPDO(): PDO
+{
+    return new PDO(
+        sprintf(
+            'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
+            $_ENV['DB_HOST'],
+            $_ENV['DB_PORT'] ?? '3306',
+            $_ENV['DB_NAME']
+        ),
+        $_ENV['DB_USER'],
+        $_ENV['DB_PASSWORD'],
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+}
+
    #[Route('/', name: 'app_home')]
 public function index(): Response
 
 {
-
-    $pdo = new PDO(
-    'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-    'root',
-    ''
-);
+$pdo = $this->getPDO();
 
     $stmtAvis = $pdo->query("SELECT * FROM avis WHERE statut = 'Validé' ORDER BY id DESC");
     $avis = $stmtAvis->fetchAll(PDO::FETCH_ASSOC);
@@ -37,17 +50,15 @@ public function index(): Response
     public function menus(Request $request): Response
     {
 
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-        'root',
-        ''
-    );
+   $pdo = $this->getPDO();
+
+
     $regime = trim((string) $request->query->get('regime', ''));
 $personnes = (int) $request->query->get('personnes', 0);
 $theme = trim((string) $request->query->get('theme', ''));
 $prix = trim((string) $request->query->get('prix', ''));
 $sql = 'SELECT * FROM menu WHERE 1 = 1';
-$parametres = [];
+$parametres = []; 
 
 if ($regime === 'vegetarien') {
     $sql .= ' AND LOWER(titre) LIKE :regime';
@@ -101,11 +112,7 @@ return $this->render('home/menus.html.twig', [
 public function contact(Request $request): Response
 {
     if ($request->isMethod('POST')) {
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-        'root',
-        ''
-    );
+   $pdo = $this->getPDO();
 
         $stmt = $pdo->prepare(
             'INSERT INTO contact (nom, email, message) VALUES (:nom, :email, :message)'
@@ -134,11 +141,7 @@ public function login(Request $request): Response
 
     if ($request->isMethod('POST')) {
         
-    $pdo = new PDO(
-    'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-    'root',
-    ''
-);
+    $pdo = $this->getPDO();
 
         $email = $request->request->get('email');
         $motDePasse = $request->request->get('mot_de_passe');
@@ -176,11 +179,7 @@ public function register(
 ): Response
 {
     if ($request->isMethod('POST')) {
-        $pdo = new PDO(
-            'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-            'root',
-            ''
-        );
+        $pdo = $this->getPDO();
 
         $motDePasse = $request->request->get('mot_de_passe');
 
@@ -257,11 +256,7 @@ public function commande(
     MailerInterface $mailer
 ): Response
 {
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-        'root',
-        ''
-    );
+    $pdo = $this->getPDO();
 
     if ($request->isMethod('POST')) {
         $stmt = $pdo->prepare("
@@ -314,11 +309,7 @@ public function rapport(Request $request): Response
         return $this->redirectToRoute('app_login');
     }
 
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-        'root',
-        ''
-    );
+    $pdo = $this->getPDO();
 
     $menu = trim((string) $request->query->get('menu', ''));
     $dateDebut = trim((string) $request->query->get('date_debut', ''));
@@ -398,11 +389,9 @@ public function employe(
     MailerInterface $mailer
 ): Response
 {
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-        'root',
-        ''
-    );
+
+    $pdo = $this->getPDO();
+
     $action = '';
     if ($request->isMethod('POST')) {
     $action = $request->request->get('action');
@@ -624,11 +613,7 @@ public function admin(
         return $this->redirectToRoute('app_login');
     }
 
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-        'root',
-        ''
-    );
+    $pdo = $this->getPDO();
 
     $message = null;
     $error = null;
@@ -750,8 +735,7 @@ public function logout(Request $request): Response
 #[Route('/mon-compte', name: 'app_mon_compte')]
 public function monCompte(Request $request): Response
 {
-    $pdo = new PDO( 'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4','root',''
-    );
+    $pdo = $this->getPDO();
 
         if ($request->isMethod('POST')) {
     $action = $request->request->get('action');
@@ -822,11 +806,7 @@ public function forgotPassword(
         if (!filter_var($emailUtilisateur, FILTER_VALIDATE_EMAIL)) {
             $error = 'Veuillez saisir une adresse e-mail valide.';
         } else {
-            $pdo = new PDO(
-                'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-                'root',
-                ''
-            );
+            $pdo = $this->getPDO();
 
             $stmt = $pdo->prepare(
                 'SELECT id, email
@@ -898,11 +878,8 @@ public function resetPassword(
     string $token,
     Request $request
 ): Response {
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=vite_gourmand;charset=utf8mb4',
-        'root',
-        ''
-    );
+    
+    $pdo = $this->getPDO();
 
     $stmt = $pdo->prepare(
         'SELECT pr.id, pr.utilisateur_id, pr.expires_at, pr.utilise
