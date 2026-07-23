@@ -64,13 +64,34 @@ Le tableau de bord permet de consulter :
 
 # 🛠️ Technologies utilisées
 
+Backend :
+
 - PHP 8
 - Symfony
+
+Frontend :
+
 - Twig
 - Bootstrap 5
 - JavaScript
-- Chart.js
+- HTML5
+- CSS3
+
+Base de données :
+
 - MySQL
+
+Déploiement :
+
+- Docker
+- Render
+- Aiven (MySQL Cloud)
+
+Outils : 
+
+- VS Code
+- Composer
+- Chart.js
 - PDO
 - Mailtrap
 - Git
@@ -146,21 +167,42 @@ Email : admin@exemple.com
 Mot de passe : motdepasse
 
 ---
+## Déploiement
+
+L'application est déployée sur Render.
+
+Le projet est déployé sur Render avec :
+
+- Docker
+- Base de données MySQL hébergée sur Aiven
+- Variables d'environnement configurées sur Render
+- Apache configuré avec `mod_rewrite`
+- Fichier `.htaccess` pour le routage Symfony
+
+### Technologies utilisées
+
+- Symfony 7
+- PHP 8.2
+- MySQL
+- Aiven (base de données cloud)
+- Render (hébergement)
+- Apache
+- Mailtrap (tests des e-mails)
 
 ## Gestion de projet
 
 Trello :
 https://trello.com/invite/b/6a3565114d739610b8d04f50/ATTI7747a835e505e67dcf155a8c704cef7205ECCA8B/ecf-vite-gourmand
 
-## Dépôt GitHub
+Dépôt GitHub
 
 Projet Symfony :
 https://github.com/yasminanaoui14-bot/mon-projet-symfony
 
-## Déploiement
+Liens :
 
 Lien de l'application : 
-https://mon-projet-symfony-production.up.railway.app 
+https://mon-projet-symfony-oqh0.onrender.com 
 
 ---
 
