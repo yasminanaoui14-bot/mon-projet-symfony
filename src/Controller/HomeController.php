@@ -20,7 +20,7 @@ class HomeController extends AbstractController
         sprintf(
             'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
             $_ENV['DB_HOST'],
-            $_ENV['DB_PORT'] ?? '3306',
+            $_ENV['DB_PORT'] ?? '19370',
             $_ENV['DB_NAME']
         ),
         $_ENV['DB_USER'],
@@ -54,11 +54,11 @@ $pdo = $this->getPDO();
 
 
     $regime = trim((string) $request->query->get('regime', ''));
-$personnes = (int) $request->query->get('personnes', 0);
-$theme = trim((string) $request->query->get('theme', ''));
-$prix = trim((string) $request->query->get('prix', ''));
-$sql = 'SELECT * FROM menu WHERE 1 = 1';
-$parametres = []; 
+    $personnes = (int) $request->query->get('personnes', 0);
+    $theme = trim((string) $request->query->get('theme', ''));
+    $prix = trim((string) $request->query->get('prix', ''));
+    $sql = 'SELECT * FROM menu WHERE 1 = 1';
+    $parametres = []; 
 
 if ($regime === 'vegetarien') {
     $sql .= ' AND LOWER(titre) LIKE :regime';
