@@ -70,7 +70,7 @@ if ($personnes > 0) {
     $parametres['personnes'] = $personnes;
 }
 if ($theme !== '') {
-    $sql .= ' AND LOWER(CONCAT(titre, " ", theme)) LIKE :theme';
+    $sql .= " AND LOWER(CONCAT(titre, ' ', theme)) LIKE :theme";
     $parametres['theme'] = '%' . strtolower($theme) . '%';
 }
 
