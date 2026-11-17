@@ -115,6 +115,29 @@ composer install
 
 Configurer le fichier `.env`.
 
+### Configuration des variables d'environnement
+
+Créer un fichier `.env.local` à la racine du projet pour
+configurer les connexions aux services utilisés.
+
+Exemple de configuration :
+
+```dotenv
+APP_ENV=dev
+APP_DEBUG=1
+APP_SECRET=remplacer_par_une_cle_secrete
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=vite_gourmand
+DB_USER=root
+DB_PASSWORD=
+
+MONGODB_URI="mongodb+srv://utilisateur:mot_de_passe@cluster.mongodb.net/"
+
+MAILER_DSN="smtp://utilisateur:mot_de_passe@serveur:port"
+```
+Les valeurs présentées sont des exemples. Le fichier .env.local contient les identifiants réels et ne doit jamais être publié sur GitHub. En production, les variables d'environnement sont configurées directement sur Render.
 Créer la base de données puis importer le fichier SQL fourni.
 
 Lancer le serveur Symfony :
@@ -188,6 +211,33 @@ Le projet est déployé sur Render avec :
 - Render (hébergement)
 - Apache
 - Mailtrap (tests des e-mails)
+
+## 🍃 MongoDB Atlas — Gestion des avis clients
+
+L'application Vite & Gourmand utilise deux systèmes de bases de données :
+
+- **MySQL** : gestion des utilisateurs, des menus, des commandes et des données principales de l'application.
+- **MongoDB Atlas** : stockage et gestion des avis clients.
+
+### Fonctionnement des avis
+
+Les clients peuvent déposer un avis après avoir utilisé les services du traiteur.
+
+Les avis sont enregistrés dans MongoDB Atlas et soumis à une modération avant leur publication.
+
+L'espace employé permet de valider ou de refuser les avis.
+
+Les avis validés peuvent ensuite être affichés sur le site.
+
+### Hébergement et sécurité
+
+La base MongoDB est hébergée sur MongoDB Atlas.
+
+La connexion est configurée à l'aide d'une variable d'environnement `MONGODB_URI`.
+
+En production, l'accès réseau à MongoDB Atlas est limité aux plages d'adresses IP sortantes autorisées de Render.
+
+Les identifiants de connexion ne sont pas stockés dans le dépôt GitHub.
 
 ## Gestion de projet
 
