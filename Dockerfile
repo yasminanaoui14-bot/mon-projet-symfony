@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     pkg-config \
     zip \
+    ca-certificates \
+    openssl \
+    && update-ca-certificates \
     && docker-php-ext-install pdo pdo_mysql zip \
     && pecl install mongodb \
     && docker-php-ext-enable mongodb
