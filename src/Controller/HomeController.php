@@ -36,11 +36,28 @@ class HomeController extends AbstractController
 public function index(): Response
 
 {
-$pdo = $this->getPDO();
+$mongoClient = new \MongoDB\Client($_ENV['MONGODB_URI']);
 
-    $stmtAvis = $pdo->query("SELECT * FROM avis WHERE statut = 'Validé' ORDER BY id DESC");
-    $avis = $stmtAvis->fetchAll(PDO::FETCH_ASSOC);
+$collection = $mongoClient
+    ->selectDatabase('vite_gourmand')
+    ->selectCollection('avis');
 
+$avis = [];
+
+$documents = $collection->find(
+    ['statut' => 'Validé'],
+    ['sort' => ['date_création' => -1]]
+);
+
+foreach ($documents as $document) {
+    $avis[] = [
+        'id' => (string) $document['_id'],
+        'client' => $document['client'] ?? '',
+        'note' => $document['note'] ?? '',
+        'commentaire' => $document['commentaire'] ?? '',
+        'statut' => $document['statut'] ?? '',
+    ];
+}
     return $this->render('home/index.html.twig', [
         'avis' => $avis
     ]);
@@ -397,20 +414,23 @@ public function employe(
     $action = $request->request->get('action');
 
     if ($action === 'avis') {
-    $avisId = (int) $request->request->get('avis_id');
+    $avisId = (string) $request->request->get('avis_id');
     $decision = (string) $request->request->get('decision');
 
-    if (in_array($decision, ['Validé', 'Refusé'], true)) {
-        $stmtAvis = $pdo->prepare("
-            UPDATE avis
-            SET statut = :statut
-            WHERE id = :id
-        ");
+    if (
+        in_array($decision, ['Validé', 'Refusé'], true)
+        && preg_match('/^[a-f0-9]{24}$/i', $avisId)
+    ) {
+        $mongoClient = new \MongoDB\Client($_ENV['MONGODB_URI']);
 
-        $stmtAvis->execute([
-            'statut' => $decision,
-            'id' => $avisId,
-        ]);
+        $collection = $mongoClient
+            ->selectDatabase('vite_gourmand')
+            ->selectCollection('avis');
+
+        $collection->updateOne(
+            ['_id' => new \MongoDB\BSON\ObjectId($avisId)],
+            ['$set' => ['statut' => $decision]]
+        );
     }
 
     return $this->redirectToRoute('app_employe');
@@ -581,13 +601,28 @@ $stmt->execute($parametres);
 
 $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmtAvis = $pdo->query("
-    SELECT *
-    FROM avis
-    ORDER BY id DESC
-");
+    $mongoClient = new \MongoDB\Client($_ENV['MONGODB_URI']);
 
-    $avis = $stmtAvis->fetchAll(PDO::FETCH_ASSOC);
+$collection = $mongoClient
+    ->selectDatabase('vite_gourmand')
+    ->selectCollection('avis');
+
+$avis = [];
+
+$documents = $collection->find(
+    [],
+    ['sort' => ['date_création' => -1]]
+);
+
+foreach ($documents as $document) {
+    $avis[] = [
+        'id' => (string) $document['_id'],
+        'client' => $document['client'] ?? '',
+        'note' => $document['note'] ?? '',
+        'commentaire' => $document['commentaire'] ?? '',
+        'statut' => $document['statut'] ?? 'En attente',
+    ];
+}
 
     return $this->render('home/employe.html.twig', [
     'commandes' => $commandes,
@@ -757,21 +792,29 @@ public function monCompte(Request $request): Response
     }
 
     if ($action === 'avis') {
-        $note = $request->request->get('note');
-        $commentaire = $request->request->get('commentaire');
+    $note = (int) $request->request->get('note');
+    $commentaire = trim((string) $request->request->get('commentaire'));
 
-        $stmt = $pdo->prepare("
-            INSERT INTO avis (client, note, commentaire, statut)
-            VALUES ('Utilisateur', :note, :commentaire, 'En attente')
-        ");
-
-        $stmt->execute([
-            'note' => $note,
-            'commentaire' => $commentaire
-        ]);
-
+    if ($note < 1 || $note > 5 || $commentaire === '') {
         return $this->redirectToRoute('app_mon_compte');
     }
+
+    $mongoClient = new \MongoDB\Client($_ENV['MONGODB_URI']);
+
+    $collection = $mongoClient
+        ->selectDatabase('vite_gourmand')
+        ->selectCollection('avis');
+
+    $collection->insertOne([
+        'client' => 'Utilisateur',
+        'note' => $note,
+        'commentaire' => $commentaire,
+        'statut' => 'En attente',
+        'date_creation' => new \MongoDB\BSON\UTCDateTime()
+    ]);
+
+    return $this->redirectToRoute('app_mon_compte');
+  }
 }
 
 
